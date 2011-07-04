@@ -36,6 +36,9 @@ public class RulesService {
 	private static final String QUERY_ROW_VALUE = "value";
 	private final static String RESULTS_QUERY = "results";
 	private final static String PROBLEM_1 = "problem-1.drl";
+	private final static String PROBLEM_2 = "problem-2.drl";
+	private final static String PROBLEM_3 = "problem-3.drl";
+	private final static String PROBLEM_4 = "problem-4.drl";
 	private final static Logger log = Logger.getLogger(RulesService.class);
 
 	private static KnowledgeBase knowledgeBase;
@@ -50,7 +53,16 @@ public class RulesService {
 		if (knowledgeBase == null) {
 			log.debug("Load rules");
 			final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-			builder.add(ResourceFactory.newClassPathResource(PROBLEM_1, RulesService.class), ResourceType.DRL);
+			try {
+				builder.add(ResourceFactory.newClassPathResource(PROBLEM_1, RulesService.class), ResourceType.DRL);
+				builder.add(ResourceFactory.newClassPathResource(PROBLEM_2, RulesService.class), ResourceType.DRL);
+				builder.add(ResourceFactory.newClassPathResource(PROBLEM_3, RulesService.class), ResourceType.DRL);
+				builder.add(ResourceFactory.newClassPathResource(PROBLEM_4, RulesService.class), ResourceType.DRL);
+			}
+			catch (final Exception e) {
+				log.error("Could not load rules file : " + e.getMessage());
+				return null;
+			}
 
 			log.debug("Compile rules");
 			final Collection<KnowledgePackage> packages = builder.getKnowledgePackages();
@@ -112,7 +124,7 @@ public class RulesService {
 	 */
 	private Set<NaturalNumber> numbers() {
 		final Set<NaturalNumber> numbers = new HashSet<NaturalNumber>();
-		for (int i = 1; i <= 1000; i++) {
+		for (long i = 1; i <= 7000; i++) {
 			numbers.add(new NaturalNumber(i));
 		}
 		return numbers;

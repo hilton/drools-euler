@@ -1,0 +1,80 @@
+package com.lunatech.euler.problem3
+
+/*
+	Problem 3
+	02 November 2001
+	
+	The prime factors of 13195 are 5, 7, 13 and 29.
+	
+	What is the largest prime factor of the number 600851475143 ?
+*/
+
+/*
+	Solution
+	The fundamental theorem of arithmetic means that the number has a unique prime factorisation.
+	This means that each time we find a prime factor, we can divide by that factor and continue with the ‘remainder’.
+	This solution is inelegant in that it requires an initial set of NatualNumber facts as candidate prime factors.
+*/
+
+import com.lunatech.euler.model.*;
+import function com.lunatech.euler.RuleFunctions.log;
+
+declare PrimeFactor
+	value : long
+end
+
+declare Remainder
+	value : long
+end
+
+rule "Starting value"
+when
+	not Remainder()
+then
+	insert(new Remainder(600851475143L));
+end
+
+rule "Prime factor remainder"
+when
+	Remainder($n : value > 0)
+	not Remainder(value < $n)
+	not NaturalNumber(value > 1 && < $n, eval($n % value == 0))
+then
+	insert(new PrimeFactor($n));
+	insert(new Remainder(0L));
+	log(drools, "%d", $n);
+end
+
+rule "Prime factor"
+when
+	# Current smallest remainder
+	Remainder($r : value)
+	not Remainder(value < $r)
+
+	# Candidate prime factor.
+	NaturalNumber($n : value > 1, eval(value < $r), eval($r % value == 0));
+	
+	# No bigger factor already found.
+	#not PrimeFactor(value > $n)
+	
+	# This factor is prime.
+	not NaturalNumber(value > 1 && < $n, eval($n % value == 0))
+then
+	insert(new PrimeFactor($n));
+	long remainder = $r/$n;
+	insert(new Remainder(remainder));
+	log(drools, "%d, remainder %d", $n, remainder);
+end
+
+rule "Problem 3 solution"
+when
+	Remainder(value == 0)
+	$solution : Number()
+		from accumulate(
+			PrimeFactor($n : value),
+			max($n) 
+		)
+	then
+		insert(new Solution(3, $solution.longValue()));
+		log(drools, "%1.0f", $solution);
+end

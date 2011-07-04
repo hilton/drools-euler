@@ -14,6 +14,6 @@ public class EventListener extends DefaultAgendaEventListener {
 	public void beforeActivationFired(final BeforeActivationFiredEvent event) {
 		final Rule rule = event.getActivation().getRule();
 		final Logger log = Logger.getLogger(rule.getPackageName() + "." + rule.getName());
-		log.debug("Before activation");
+		log.trace("Before activation");
 	}
 }

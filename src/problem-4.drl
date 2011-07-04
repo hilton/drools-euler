@@ -1,0 +1,40 @@
+package com.lunatech.euler.problem4
+
+/*
+	Problem 4
+	16 November 2001
+	
+	A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
+	
+	Find the largest palindrome made from the product of two 3-digit numbers.
+*/
+
+import com.lunatech.euler.model.*;
+import function com.lunatech.euler.RuleFunctions.log;
+import function com.lunatech.euler.RuleFunctions.isPalindrome;
+
+declare Palindrome
+	value : long
+end
+
+rule "Palindrome"
+when
+	NaturalNumber($n : value >= 100 && <= 999)
+	NaturalNumber($m : value  >= $n && <= 999)
+	not Palindrome(value >= ($n * $m))
+	eval(isPalindrome($n * $m))
+then
+	insert(new Palindrome($n * $m));
+end
+
+rule "Problem 4 solution"
+when
+	$solution : Number()
+		from accumulate(
+			Palindrome($n : value),
+			max($n) 
+		)
+then
+	insert(new Solution(4, $solution.longValue()));
+	log(drools, "%1.0f", $solution);
+end

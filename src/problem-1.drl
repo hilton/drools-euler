@@ -1,4 +1,4 @@
-package com.lunatech.euler
+package com.lunatech.euler.problem1
 
 /*
 	Problem 1
@@ -10,6 +10,7 @@ package com.lunatech.euler
 */
 
 import com.lunatech.euler.model.*;
+import function com.lunatech.euler.RuleFunctions.log;
 
 query "Problem solutions"
 	value : Solution()
@@ -24,4 +25,5 @@ rule "Problem 1 solution"
 			)
 	then
 		insert(new Solution(1, $multiples.longValue()));
+		log(drools, "%1.0f", $multiples);
 end
