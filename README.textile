@@ -1,0 +1,17 @@
+Minimal stateless decision service "Drools":http://www.jboss.org/drools example using Drools 5.2, including a JUnit 4 unit test to run the example.
+
+The example is based on a "Project Euler":http://projecteuler.net/ mathematical problem.
+
+h2. Dependencies
+
+The following libraries and JARs are required in the compile-time or run-time classpath.
+
+* Drools 5.2.0.Final
+** antlr-runtime-3.3.jar 
+** drools-compiler-5.2.0.Final.jar
+** drools-core-5.2.0.Final.jar
+** knowledge-api-5.2.0.Final.jar
+** mvel2-2.1.0.drools2.jar
+* Apache Log4J 1.2.16
+** log4j-1.2.16.jar
+
