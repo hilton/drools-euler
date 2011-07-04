@@ -1,0 +1,88 @@
+package com.lunatech.euler.problem5
+
+/*
+	Problem 5
+	30 November 2001
+
+	2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any Factor.
+
+	What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+*/
+
+/*
+	Solution
+	Calculate the least common multiple of the set of numbers by calculating the maximum exponent for each
+	prime in the prime factorisation for each of the numbers, which are the exponents in the prime factorisation
+	of the least common multiple.
+*/
+
+import com.lunatech.euler.model.*;
+import function com.lunatech.euler.RuleFunctions.log;
+
+declare Limit
+	value : long
+end
+
+declare Factor
+	value : long
+end
+
+declare PrimeFactor
+	value : long
+	exponent : long
+end
+
+rule "Add limit"
+when
+	not Limit()
+then
+	insert(new Limit(20L));
+end
+
+rule "Factor"
+when
+	# $n is one of the factors between 1 and 20
+	Limit($l : value)
+	NaturalNumber($n : value <= $l)
+then
+	insert(new Factor($n));
+end
+
+rule "Factor is prime"
+when
+	# $n is prime
+	Factor($n : value > 1)
+	not NaturalNumber(value > 1 && < $n, eval($n % value == 0))
+then
+	insert(new PrimeFactor($n, 1));
+	log(drools, "%d", $n);
+end
+
+rule "Prime factor exponent can be increased"
+when
+	# There is a factor that is divided by the next higher exponent of $p
+	$p : PrimeFactor($n : value, $e : exponent)
+	Factor( eval(value % Math.pow($n, $e + 1) == 0) )
+then
+	modify ($p) {
+		setExponent($e + 1);
+	}
+
+	log(drools, "%d ^ %d", $n, $e + 1);
+end
+
+rule "Problem 5 solution"
+when
+	# The solution is the product of the prime factors raised to their exponents
+	$solution : Number()
+		from accumulate(
+			PrimeFactor($n : value, $e : exponent),
+			init(double result = 1; ),
+			action(result = result * Math.pow($n, $e); ),
+			reverse(result = result / Math.pow($n, $e); ),
+			result( result )
+		)
+then
+	insert(new Solution(5, $solution.longValue()));
+	log(drools, "%1.0f", $solution);
+end

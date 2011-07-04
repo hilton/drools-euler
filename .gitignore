@@ -2,5 +2,9 @@
 .project
 .settings
 .DS_Store
+*.iml
+*.ipr
+*.iws
 bin
 lib
+out
