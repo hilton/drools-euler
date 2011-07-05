@@ -9,6 +9,12 @@ package com.lunatech.euler.problem1
 	Find the sum of all the multiples of 3 or 5 below 1000.
 */
 
+/*
+	Solution
+	Note: the rules session starts with an initial set of at least 1000 NaturalNumber facts despite this not being most elegant,
+	in order to demonstrate inserting reference data into a rules session (this is more a Drools example than about Project Euler).
+*/
+
 import com.lunatech.euler.model.*;
 import function com.lunatech.euler.RuleFunctions.log;
 

@@ -54,9 +54,6 @@ when
 	# Candidate prime factor.
 	NaturalNumber($n : value > 1, eval(value < $r), eval($r % value == 0));
 	
-	# No bigger factor already found.
-	#not PrimeFactor(value > $n)
-	
 	# This factor is prime.
 	not NaturalNumber(value > 1 && < $n, eval($n % value == 0))
 then
