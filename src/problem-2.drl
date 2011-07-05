@@ -19,40 +19,53 @@ declare Term
 	value : long
 end
 
+declare Limit
+	value : long
+end
+
+rule "Limit"
+when
+	not Limit()
+then
+	long limit = 4000000L;
+	insert(new Limit(limit));
+	log(drools, "%d", limit);
+end
+
 rule "First two terms"
 when
+	Limit()
 	not Term(value == 1)
 	not Term(value == 2)
 then
 	insert(new Term(1, 1));
 	insert(new Term(2, 2));
-	#log(drools, "term %d: %d", 1, 1);
 end
 
 rule "Next term"
 when
 	Term($i : index, $a : value)
+	not Limit(value < $a)
 	Term(index == ($i + 1), $b : value != $a)
 	not Term(value == ($a + $b))
-	eval($a + $b <= 4000000)
 then
 	long value = $a + $b;
 	long index = $i + 2;
 	insert(new Term(index, value));
-	#log(drools, "next term %d: %d", index, value);
+	log(drools, "term %d = %d", index, value);
 end
 
 rule "Problem 2 solution"
 when
-	Term($i : index, $a : value)
-	Term(index == ($i + 1), $b : value != $a)
-	eval($a + $b > 4000000)
+	Limit($limit : value)
+	Term($i : index, $a : value < $limit)
+	Term(index == ($i + 1), $b : value > $limit)
 	$evenTerms : Number()
 		from accumulate(
-			Term($v : value <= 4000000, eval(value % 2 == 0) ),
+			Term($v : value, eval(value % 2 == 0), index <= $i),
 			sum($v) 
 		)
 	then
 		insert(new Solution(2, $evenTerms.longValue()));
-		log(drools, "%1.0f", $evenTerms);
+		log(drools, "sum of even values from first %d terms = %1.0f", $i, $evenTerms);
 end
