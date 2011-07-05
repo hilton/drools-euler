@@ -12,60 +12,72 @@ package com.lunatech.euler.problem3
 /*
 	Solution
 	The fundamental theorem of arithmetic means that the number has a unique prime factorisation.
-	This means that each time we find a prime factor, we can divide by that factor and continue with the ‘remainder’.
-	This solution is inelegant in that it requires an initial set of NatualNumber facts as candidate prime factors.
+	Therefore, find prime factors and divide the composite until the prime factorisation is found.
+	Note that a factor of n (excluding n itself) cannot be larger than its square root.
 */
 
 import com.lunatech.euler.model.*;
 import function com.lunatech.euler.RuleFunctions.log;
 
+declare Limit
+	value : long
+end
+
 declare PrimeFactor
 	value : long
 end
 
-declare Remainder
+declare Composite
 	value : long
 end
 
-rule "Starting value"
+rule "Starting value and limit"
 when
-	not Remainder()
+	not Composite()
 then
-	insert(new Remainder(600851475143L));
+	long start = 600851475143L;
+	insert(new Composite(start));
+	double limit = Math.sqrt(new Double(start));
+	insert(new Limit((long) limit));
+	log(drools, "limit = %1.2f", limit);
 end
 
-rule "Prime factor remainder"
+rule "New prime factor"
 when
-	Remainder($n : value > 0)
-	not Remainder(value < $n)
-	not NaturalNumber(value > 1 && < $n, eval($n % value == 0))
+	Composite($composite : value)
+	Limit($limit : value)
+
+	# $n divides the composite and is prime
+	NaturalNumber($n : value > 1 && <= $composite && < $limit, ($composite % value) == 0);
+	not NaturalNumber(value > 1 && < $n, ($n % value) == 0)
 then
 	insert(new PrimeFactor($n));
-	insert(new Remainder(0L));
 	log(drools, "%d", $n);
 end
 
-rule "Prime factor"
+rule "Divide composite by prime factor"
 when
-	# Current smallest remainder
-	Remainder($r : value)
-	not Remainder(value < $r)
-
-	# Candidate prime factor.
-	NaturalNumber($n : value > 1, eval(value < $r), eval($r % value == 0));
-	
-	# This factor is prime.
-	not NaturalNumber(value > 1 && < $n, eval($n % value == 0))
+	PrimeFactor($factor : value)
+	$composite : Composite( (value % $factor) == 0 )
 then
-	insert(new PrimeFactor($n));
-	long remainder = $r/$n;
-	insert(new Remainder(remainder));
-	log(drools, "%d, remainder %d", $n, remainder);
+	modify ($composite) { setValue($composite.getValue() / $factor); }
+	log(drools, "divide by %d, composite = %d", $factor, $composite.getValue());
+end
+
+rule "Add number"
+salience -1
+when
+	Composite(value > 1)
+	Limit($limit : value)
+	NaturalNumber($n : value <= ($limit - 1))
+	not NaturalNumber(value == ($n + 1))
+then
+	insert(new NaturalNumber($n + 1));
 end
 
 rule "Problem 3 solution"
 when
-	Remainder(value == 0)
+	Composite(value == 1)
 	$solution : Number()
 		from accumulate(
 			PrimeFactor($n : value),

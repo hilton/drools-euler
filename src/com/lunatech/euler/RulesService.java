@@ -1,14 +1,7 @@
 package com.lunatech.euler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
+import com.lunatech.euler.model.NaturalNumber;
+import com.lunatech.euler.model.Solution;
 import org.apache.log4j.Logger;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
@@ -25,8 +18,14 @@ import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 
-import com.lunatech.euler.model.NaturalNumber;
-import com.lunatech.euler.model.Solution;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Service facade for running the rules engine.
@@ -51,6 +50,7 @@ public class RulesService {
 	 * Utility method to construct and cache the {@link KnowledgeBase} instance.
 	 */
 	private KnowledgeBase getKnowledgeBase() {
+		log.info("getKnowledgeBase");
 		if (knowledgeBase == null) {
 			log.debug("Load rules");
 			final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -100,16 +100,18 @@ public class RulesService {
 		// Get the compiled rules.
 		final KnowledgeBase knowledgeBase = getKnowledgeBase();
 
+		log.info("Rule session");
 		if (knowledgeBase != null) {
-			log.debug("Configure and execute rule session");
 			final StatelessKnowledgeSession session = knowledgeBase.newStatelessKnowledgeSession();
 			session.addEventListener(new EventListener());
 
+			final long start = System.currentTimeMillis();
 			final List<Command> commands = new ArrayList<Command>();
 			commands.add(CommandFactory.newInsertElements(numbers()));
 			commands.add(CommandFactory.newFireAllRules());
 			commands.add(CommandFactory.newQuery(RESULTS_QUERY, "Problem solutions"));
 			final ExecutionResults executionResults = session.execute(CommandFactory.newBatchExecution(commands));
+			log.info(String.format("… executed in %d ms", System.currentTimeMillis() - start));
 
 			solutions = new HashMap<Integer, Long>();
 			final QueryResults queryResults = (QueryResults) executionResults.getValue(RESULTS_QUERY);
@@ -126,7 +128,7 @@ public class RulesService {
 	 */
 	private Set<NaturalNumber> numbers() {
 		final Set<NaturalNumber> numbers = new HashSet<NaturalNumber>();
-		for (long i = 1; i <= 7000; i++) {
+		for (long i = 1; i <= 1000; i++) {
 			numbers.add(new NaturalNumber(i));
 		}
 		return numbers;
