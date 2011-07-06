@@ -39,6 +39,7 @@ public class RulesService {
 	private final static String PROBLEM_3 = "problem-3.drl";
 	private final static String PROBLEM_4 = "problem-4.drl";
 	private final static String PROBLEM_5 = "problem-5.drl";
+	private final static String PROBLEM_6 = "problem-6.drl";
 	private final static Logger log = Logger.getLogger(RulesService.class);
 
 	private static KnowledgeBase knowledgeBase;
@@ -60,6 +61,7 @@ public class RulesService {
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_3, RulesService.class), ResourceType.DRL);
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_4, RulesService.class), ResourceType.DRL);
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_5, RulesService.class), ResourceType.DRL);
+				builder.add(ResourceFactory.newClassPathResource(PROBLEM_6, RulesService.class), ResourceType.DRL);
 			}
 			catch (final Exception e) {
 				log.error("Could not load rules file : " + e.getMessage());

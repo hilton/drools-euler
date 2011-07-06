@@ -1,0 +1,63 @@
+package com.lunatech.euler.problem6
+
+/*
+	Problem 6
+	14 December 2001
+
+	The sum of the squares of the first ten natural numbers is,
+	1² + 2² + ... + 10² = 385
+
+	The square of the sum of the first ten natural numbers is,
+	(1 + 2 + ... + 10)² = 55² = 3025
+
+	Hence the difference between the sum of the squares of the first ten natural numbers and the square of the sum is 3025  385 = 2640.
+
+	Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
+*/
+
+/*
+	Solution
+	The square of a sum can be expressed as the sum of the squares plus the double products of all of the terms.
+	Since we need to subtract the sum of squares, all we need to calculate is the product of all terms and
+	double it.
+*/
+
+import com.lunatech.euler.model.*;
+import function com.lunatech.euler.RuleFunctions.log;
+
+declare Limit
+	value : long
+end
+
+declare Product
+	value : long
+end
+
+rule "Add limit"
+when
+	not Limit()
+then
+	insert(new Limit(100L));
+end
+
+rule "Product"
+when
+	Limit($limit : value)
+	NaturalNumber($n : value <= $limit)
+	NaturalNumber($m : value < $n)
+then
+	insert(new Product($n * $m));
+end
+
+rule "Problem 6 solution"
+when
+	$solution : Number()
+		from accumulate(
+			Product($v : value),
+			sum($v)
+		)
+then
+	long solution = $solution.longValue() * 2;
+	insert(new Solution(6, solution));
+	log(drools, "%d", solution);
+end
