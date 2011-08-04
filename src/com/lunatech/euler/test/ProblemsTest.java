@@ -51,11 +51,16 @@ public class ProblemsTest {
 
 	@Test
 	public void problem6() {
-			assertSolution(6, 25164150L);
+		assertSolution(6, 25164150L);
 	}
 
 	@Test
 	public void problem7() {
 		assertSolution(7, 104743L);
+	}
+
+	@Test
+	public void problem8() {
+		assertSolution(8, 40824L);
 	}
 }
