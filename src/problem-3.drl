@@ -3,9 +3,9 @@ package com.lunatech.euler.problem3
 /*
 	Problem 3
 	02 November 2001
-	
+
 	The prime factors of 13195 are 5, 7, 13 and 29.
-	
+
 	What is the largest prime factor of the number 600851475143 ?
 */
 
@@ -47,9 +47,8 @@ when
 	Composite($composite : value)
 	Limit($limit : value)
 
-	# $n divides the composite and is prime
-	NaturalNumber($n : value > 1 && <= $composite && < $limit, ($composite % value) == 0);
-	not NaturalNumber(value > 1 && < $n, ($n % value) == 0)
+	# $n is prime and divides the composite (using prime numbers generated in problem-7.drl)
+	PrimeNumber($n : value > 1 && <= $composite && < $limit, ($composite % value) == 0);
 then
 	insert(new PrimeFactor($n));
 	log(drools, "%d", $n);
@@ -81,7 +80,7 @@ when
 	$solution : Number()
 		from accumulate(
 			PrimeFactor($n : value),
-			max($n) 
+			max($n)
 		)
 	then
 		insert(new Solution(3, $solution.longValue()));

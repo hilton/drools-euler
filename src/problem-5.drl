@@ -52,7 +52,7 @@ rule "Factor is prime"
 when
 	# $n is prime
 	Factor($n : value > 1)
-	not NaturalNumber(value > 1 && < $n, ($n % value) == 0)
+	PrimeNumber(value == $n)
 then
 	insert(new PrimeFactor($n, 1));
 	log(drools, "%d", $n);
