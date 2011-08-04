@@ -3,9 +3,9 @@ package com.lunatech.euler.problem1
 /*
 	Problem 1
 	05 October 2001
-	
+
 	If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
-	
+
 	Find the sum of all the multiples of 3 or 5 below 1000.
 */
 
@@ -24,12 +24,12 @@ end
 
 rule "Problem 1 solution"
 	when
-		$multiples : Number()
+		Number($multiples : longValue)
 			from accumulate(
 				NaturalNumber($v : value < 1000, ( (value % 3) == 0 || (value % 5) == 0) ),
-				sum($v) 
+				sum($v)
 			)
 	then
-		insert(new Solution(1, $multiples.longValue()));
-		log(drools, "%1.0f", $multiples);
+		insert(new Solution(1, $multiples));
+		log(drools, "%d", $multiples);
 end

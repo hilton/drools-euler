@@ -40,6 +40,7 @@ public class RulesService {
 	private final static String PROBLEM_4 = "problem-4.drl";
 	private final static String PROBLEM_5 = "problem-5.drl";
 	private final static String PROBLEM_6 = "problem-6.drl";
+	private final static String PROBLEM_7 = "problem-7.drl";
 	private final static Logger log = Logger.getLogger(RulesService.class);
 
 	private static KnowledgeBase knowledgeBase;
@@ -62,6 +63,7 @@ public class RulesService {
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_4, RulesService.class), ResourceType.DRL);
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_5, RulesService.class), ResourceType.DRL);
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_6, RulesService.class), ResourceType.DRL);
+				builder.add(ResourceFactory.newClassPathResource(PROBLEM_7, RulesService.class), ResourceType.DRL);
 			}
 			catch (final Exception e) {
 				log.error("Could not load rules file : " + e.getMessage());
@@ -113,11 +115,11 @@ public class RulesService {
 			commands.add(CommandFactory.newFireAllRules());
 			commands.add(CommandFactory.newQuery(RESULTS_QUERY, "Problem solutions"));
 			final ExecutionResults executionResults = session.execute(CommandFactory.newBatchExecution(commands));
-			log.info(String.format("… executed in %d ms", System.currentTimeMillis() - start));
 
 			solutions = new HashMap<Integer, Long>();
 			final QueryResults queryResults = (QueryResults) executionResults.getValue(RESULTS_QUERY);
-			log.debug("Query results found: " + queryResults.size());
+			final double duration = (System.currentTimeMillis() - start) / 1000;
+			log.info(String.format("%d solutions found in %d ms", queryResults.size(), System.currentTimeMillis() - start));
 			for (final QueryResultsRow row : queryResults) {
 				final Solution solution = (Solution) row.get(QUERY_ROW_VALUE);
 				solutions.put(solution.getProblem(), solution.getSolution());

@@ -1,0 +1,69 @@
+package com.lunatech.euler.problem7
+
+/*
+	Problem 7
+	28 December 2001
+
+	By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
+
+	What is the 10001st prime number?
+*/
+
+/*
+	Solution
+	Iterate over natural numbers, in order checking whether each one is prime. Optimisations: only check odd numbers,
+	a number is not prime if and only if any smaller prime number is a factor.
+*/
+
+import com.lunatech.euler.model.*;
+import function com.lunatech.euler.RuleFunctions.log;
+
+declare CandidatePrimeNumber
+	value : long
+end
+
+declare PreviousPrimeNumber
+	index : long
+	value : long
+end
+
+rule "First prime"
+when
+	not PrimeNumber()
+then
+	insert(new PrimeNumber(1, 2));
+	insert(new CandidatePrimeNumber(3));
+end
+
+
+rule "Next prime"
+salience 1
+when
+	// Find the previous prime number (the one with the highest index)
+	Number($previousIndex : longValue) from accumulate( PrimeNumber($i : index), max($i) )
+	PrimeNumber(index == $previousIndex, $previousPrime : value)
+
+	// Find the next candidate and check that it is prime (not divisible by a smaller prime)
+	CandidatePrimeNumber($n : value > $previousPrime)
+	not PrimeNumber(value < $n, eval($n % value == 0))
+then
+//	log(drools, "p(%d) = %d", $previousIndex + 1, $n);
+	insert(new PrimeNumber($previousIndex + 1, $n));
+end
+
+rule "Next candidate"
+when
+	not Solution(problem == 7)
+	$candidate : CandidatePrimeNumber($n : value)
+then
+	retract($candidate);
+	insert(new CandidatePrimeNumber($n + 2));
+end
+
+rule "Problem 7 solution"
+when
+	PrimeNumber(index == 10001, $solution : value)
+then
+	insert(new Solution(7, $solution));
+	log(drools, "%d", $solution);
+end
