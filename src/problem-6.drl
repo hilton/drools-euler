@@ -50,6 +50,7 @@ then
 end
 
 rule "Problem 6 solution"
+salience -1
 when
 	$solution : Number()
 		from accumulate(

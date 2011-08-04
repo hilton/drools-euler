@@ -72,6 +72,7 @@ then
 end
 
 rule "Problem 5 solution"
+salience -1
 when
 	# The solution is the product of the prime factors raised to their exponents
 	$solution : Number()

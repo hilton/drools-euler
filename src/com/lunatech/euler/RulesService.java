@@ -123,6 +123,7 @@ public class RulesService {
 			for (final QueryResultsRow row : queryResults) {
 				final Solution solution = (Solution) row.get(QUERY_ROW_VALUE);
 				solutions.put(solution.getProblem(), solution.getSolution());
+				log.info(String.format("Solution %d = %d", solution.getProblem(), solution.getSolution()));
 			}
 		}
 	}
