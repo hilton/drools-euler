@@ -1,0 +1,92 @@
+package com.lunatech.euler.problem9
+
+/*
+	Problem 9
+	25 January 2002
+
+	A Pythagorean triplet is a set of three natural numbers, a  b  c, for which,
+	a² + b² = c²
+
+	For example, 3² + 4² = 9 + 16 = 25 = 5².
+
+	There exists exactly one Pythagorean triplet for which a + b + c = 1000.
+	Find the product abc.
+*/
+
+/*
+	Solution
+	If (a, b, c) is a Pythagorean triplet, then so is (ka, kb, kc) for any natural number k.
+	Start with small a, b and c and check the multiples of k before looking for bigger triplets.
+*/
+
+import com.lunatech.euler.model.*;
+import function com.lunatech.euler.RuleFunctions.log;
+
+declare Triplet
+	a : long
+	b : long
+	c : long
+end
+
+declare Limit
+	value : long
+end
+
+# Initially, only look for triples with a, b and c < 10
+rule "Initial limit"
+when
+	not Limit()
+then
+	insert(new Limit(10));
+end
+
+# Generate new triplets as multiples of existing triplets
+rule "Triplet multiple"
+when
+	not Solution(problem == 9)
+	Triplet($a : a, $b : b, $c : c)
+	NaturalNumber($k : value > 1 && < 500)
+	not Triplet(a == ($k * $a), b == ($k * $b), c == ($k * $c))
+	eval($k*$a + $k*$b + $k*$c <= 1000)
+then
+//	log(drools, "k = %d, %d² + %d² = %d²", $k, $k * $a, $k * $b, $k * $c);
+	insert(new Triplet($k * $a, $k * $b, $k * $c));
+end
+
+# Find triplets by brute-force checking all combinations up to the current limit.
+rule "Triplet from formula"
+salience -1
+when
+	not Solution(problem == 9)
+	Limit($l : value)
+	NaturalNumber($c : value < $l)
+	NaturalNumber($a : value < $l && <= $c)
+	NaturalNumber($b : value <= $a)
+	not Triplet(a == $a, b == $b, c == $c)
+	eval($a*$a + $b*$b == $c*$c)
+then
+//	log(drools, "%d² + %d² = %d²", $a, $b, $c);
+	insert(new Triplet($a, $b, $c));
+end
+
+# Increase the limit for the brute force check, to find more triplets.
+rule "Increase limit"
+salience -2
+when
+	not Solution(problem == 9)
+	$l : Limit(value < 990)
+then
+	log(drools, "%d", $l.getValue() + 10);
+	retract($l);
+	insert(new Limit($l.getValue() + 10));
+end
+
+rule "Problem 9 solution"
+when
+	Triplet($a : a, $b : b, $c : c)
+	eval($a + $b + $c == 1000)
+then
+	long product = $a * $b * $c;
+	log(drools, "%d² + %d² = %d², sum = %d, product = %d", $a, $b, $c, $a+$b+$c, product);
+	insert(new Solution(9, product));
+end
