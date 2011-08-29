@@ -1,0 +1,43 @@
+package com.lunatech.euler.problem10
+
+/*
+	Problem 10
+	08 February 2002
+
+	The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+
+	Find the sum of all the primes below two million.
+*/
+
+/*
+	Solution based on setting a higher primes limit in problem 7.
+*/
+
+import com.lunatech.euler.model.*;
+import function com.lunatech.euler.RuleFunctions.log;
+
+declare Limit
+	value : long
+end
+
+rule "Limit"
+salience 1
+when
+	not Limit()
+then
+	final long limit = 2000000L;
+	insert(new Limit(limit));
+end
+
+rule "Problem 10 solution"
+salience 1
+when
+	Limit($l : value)
+	PrimeNumber(value > $l)
+	Number($primes : longValue) from accumulate( PrimeNumber($p : value < $l), sum($p) )
+then
+	final long solution = $primes;
+	insert(new Solution(10, solution));
+	log(drools, "%d", solution);
+end
+

@@ -1,6 +1,7 @@
 package com.lunatech.euler;
 
 import com.lunatech.euler.model.NaturalNumber;
+import com.lunatech.euler.model.PrimeNumber;
 import com.lunatech.euler.model.Solution;
 import org.apache.log4j.Logger;
 import org.drools.KnowledgeBase;
@@ -43,6 +44,7 @@ public class RulesService {
 	private final static String PROBLEM_7 = "problem-7.drl";
 	private final static String PROBLEM_8 = "problem-8.drl";
 	private final static String PROBLEM_9 = "problem-9.drl";
+	private final static String PROBLEM_10 = "problem-10.drl";
 	private final static Logger log = Logger.getLogger(RulesService.class);
 
 	private static KnowledgeBase knowledgeBase;
@@ -68,6 +70,7 @@ public class RulesService {
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_7, RulesService.class), ResourceType.DRL);
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_8, RulesService.class), ResourceType.DRL);
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_9, RulesService.class), ResourceType.DRL);
+				builder.add(ResourceFactory.newClassPathResource(PROBLEM_10, RulesService.class), ResourceType.DRL);
 			}
 			catch (final Exception e) {
 				log.error("Could not load rules file : " + e.getMessage());

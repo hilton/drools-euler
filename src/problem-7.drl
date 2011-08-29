@@ -11,8 +11,10 @@ package com.lunatech.euler.problem7
 
 /*
 	Solution
-	Iterate over natural numbers, in order checking whether each one is prime. Optimisations: only check odd numbers,
-	a number is not prime if and only if any smaller prime number is a factor.
+	Iterate over natural numbers, in order checking whether each one is prime. Optimisations:
+	- only check odd numbers,
+	- a number is not prime if and only if any smaller prime number is a factor,
+	- only check those prime factors less than or equal to the square root of a number.
 */
 
 import com.lunatech.euler.model.*;
@@ -44,8 +46,9 @@ when
 	PrimeNumber(index == $previousIndex, $previousPrime : value)
 
 	// Find the next candidate and check that it is prime (not divisible by a smaller prime)
+	// Only consider primes less than the square root of the candidate.
 	CandidatePrimeNumber($n : value > $previousPrime)
-	not PrimeNumber(value < $n, eval($n % value == 0))
+	not PrimeNumber($p : value, eval($p * $p <= $n && $n % value == 0))
 then
 //	log(drools, "p(%d) = %d", $previousIndex + 1, $n);
 	insert(new PrimeNumber($previousIndex + 1, $n));
@@ -53,7 +56,7 @@ end
 
 rule "Next candidate"
 when
-	not Solution(problem == 7)
+	not Solution(problem == 10)
 	$candidate : CandidatePrimeNumber($n : value)
 then
 	retract($candidate);
