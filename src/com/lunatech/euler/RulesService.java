@@ -1,7 +1,6 @@
 package com.lunatech.euler;
 
 import com.lunatech.euler.model.NaturalNumber;
-import com.lunatech.euler.model.PrimeNumber;
 import com.lunatech.euler.model.Solution;
 import org.apache.log4j.Logger;
 import org.drools.KnowledgeBase;
@@ -55,8 +54,8 @@ public class RulesService {
 	/**
 	 * Utility method to construct and cache the {@link KnowledgeBase} instance.
 	 */
-	private KnowledgeBase getKnowledgeBase() {
-		log.info("getKnowledgeBase");
+	private KnowledgeBase initKnowledgeBase() {
+		log.info("initKnowledgeBase");
 		if (knowledgeBase == null) {
 			log.debug("Load rules");
 			final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -109,30 +108,36 @@ public class RulesService {
 	public void solveProblems() {
 
 		// Get the compiled rules.
-		final KnowledgeBase knowledgeBase = getKnowledgeBase();
+		initKnowledgeBase();
 
 		log.info("Rule session");
-		if (knowledgeBase != null) {
-			final StatelessKnowledgeSession session = knowledgeBase.newStatelessKnowledgeSession();
-			session.addEventListener(new EventListener());
-
-			final long start = System.currentTimeMillis();
-			final List<Command> commands = new ArrayList<Command>();
-			commands.add(CommandFactory.newInsertElements(numbers()));
-			commands.add(CommandFactory.newFireAllRules());
-			commands.add(CommandFactory.newQuery(RESULTS_QUERY, "Problem solutions"));
-			final ExecutionResults executionResults = session.execute(CommandFactory.newBatchExecution(commands));
-
-			solutions = new HashMap<Integer, Long>();
-			final QueryResults queryResults = (QueryResults) executionResults.getValue(RESULTS_QUERY);
-			final double duration = (System.currentTimeMillis() - start) / 1000;
-			log.info(String.format("%d solutions found in %d ms", queryResults.size(), System.currentTimeMillis() - start));
-			for (final QueryResultsRow row : queryResults) {
-				final Solution solution = (Solution) row.get(QUERY_ROW_VALUE);
-				solutions.put(solution.getProblem(), solution.getSolution());
-				log.info(String.format("Solution %d = %d", solution.getProblem(), solution.getSolution()));
-			}
+		if (knowledgeBase == null) {
+			throw new IllegalStateException("KnowledgeBase not initialised");
 		}
+
+		final StatelessKnowledgeSession session = knowledgeBase.newStatelessKnowledgeSession();
+		session.addEventListener(new EventListener());
+		final WorkingMemoryInsertionLogger workingMemoryLogger = new WorkingMemoryInsertionLogger();
+		session.addEventListener(workingMemoryLogger);
+
+		final long start = System.currentTimeMillis();
+		final List<Command> commands = new ArrayList<Command>();
+		commands.add(CommandFactory.newInsertElements(numbers()));
+		commands.add(CommandFactory.newFireAllRules());
+		commands.add(CommandFactory.newQuery(RESULTS_QUERY, "Problem solutions"));
+		final ExecutionResults executionResults = session.execute(CommandFactory.newBatchExecution(commands));
+
+		solutions = new HashMap<Integer, Long>();
+		final QueryResults queryResults = (QueryResults) executionResults.getValue(RESULTS_QUERY);
+		final double duration = (System.currentTimeMillis() - start) / 1000;
+		log.info(String.format("%d solutions found in %d ms", queryResults.size(), System.currentTimeMillis() - start));
+		for (final QueryResultsRow row : queryResults) {
+			final Solution solution = (Solution) row.get(QUERY_ROW_VALUE);
+			solutions.put(solution.getProblem(), solution.getSolution());
+			log.info(String.format("Solution %d = %d", solution.getProblem(), solution.getSolution()));
+		}
+
+		workingMemoryLogger.log();
 	}
 
 	/**
