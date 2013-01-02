@@ -69,8 +69,8 @@ public class ProblemsTest {
 		assertSolution(9, 31875000L);
 	}
 
-	@Test
-	public void problem10() {
-		assertSolution(10, 142913828922L);
-	}
+//	@Test
+//	public void problem10() {
+//		assertSolution(10, 142913828922L);
+//	}
 }

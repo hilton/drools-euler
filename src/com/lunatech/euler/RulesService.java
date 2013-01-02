@@ -69,7 +69,7 @@ public class RulesService {
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_7, RulesService.class), ResourceType.DRL);
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_8, RulesService.class), ResourceType.DRL);
 				builder.add(ResourceFactory.newClassPathResource(PROBLEM_9, RulesService.class), ResourceType.DRL);
-				builder.add(ResourceFactory.newClassPathResource(PROBLEM_10, RulesService.class), ResourceType.DRL);
+//				builder.add(ResourceFactory.newClassPathResource(PROBLEM_10, RulesService.class), ResourceType.DRL);
 			}
 			catch (final Exception e) {
 				log.error("Could not load rules file : " + e.getMessage());

@@ -35,10 +35,12 @@ when
 then
 	insert(new PrimeNumber(1, 2));
 	insert(new CandidatePrimeNumber(3));
+	log(drools, "");
 end
 
 
 rule "Next prime"
+// Set salience higher to test candidates before "Next candidate"
 salience 1
 when
 	// Find the previous prime number (the one with the highest index)
@@ -50,13 +52,16 @@ when
 	CandidatePrimeNumber($n : value > $previousPrime)
 	not PrimeNumber($p : value, eval($p * $p <= $n && $n % value == 0))
 then
-//	log(drools, "p(%d) = %d", $previousIndex + 1, $n);
+	log(drools, "p(%d) = %d", $previousIndex + 1, $n);
 	insert(new PrimeNumber($previousIndex + 1, $n));
 end
 
 rule "Next candidate"
 when
-	not Solution(problem == 10)
+#    (or
+    	not PrimeNumber(index == 10001)
+#	    not Solution(problem == 10)
+#    )
 	$candidate : CandidatePrimeNumber($n : value)
 then
 	retract($candidate);

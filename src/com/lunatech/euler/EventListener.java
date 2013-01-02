@@ -17,7 +17,7 @@
 			final Rule rule = event.getActivation().getRule();
 			final Logger log = Logger.getLogger(rule.getPackageName() + "." + rule.getName());
 			if (log.isTraceEnabled()) {
-				log.trace("Before activation");
+				log.trace(event.getClass().getSimpleName());
 			}
 		}
 	}

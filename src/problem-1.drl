@@ -18,6 +18,42 @@ package com.lunatech.euler.problem1
 import com.lunatech.euler.model.*;
 import function com.lunatech.euler.RuleFunctions.log;
 
+rule "Add square"
+when
+	not SquareNumber()
+then
+	insert(new SquareNumber(4L, 2L));
+	log(drools, "%d", 4);
+end
+
+rule "Natural number"
+when
+	NaturalNumber($n : value < 5L)
+then
+	log(drools, "%d", $n);
+end
+
+rule "Four" extends "Natural number"
+when
+	NaturalNumber($m : value > 3L, value == $n)
+then
+	log(drools, "%d", $m);
+end
+
+rule "Square number"
+when
+	SquareNumber($n : value < 5L)
+then
+	log(drools, "%d", $n);
+end
+
+rule "Square number with root"
+when
+	SquareNumber($n : value, $r : root)
+then
+	log(drools, "%d = %d squared", $n, $r);
+end
+
 query "Problem solutions"
 	value : Solution()
 end

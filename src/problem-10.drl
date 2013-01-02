@@ -11,6 +11,8 @@ package com.lunatech.euler.problem10
 
 /*
 	Solution based on setting a higher primes limit in problem 7.
+	Note that this is not a proper solution, because it takes too long to run, so it is commented out in"
+    RulesService.java, problem-7.drl and ProblemsTest.java.
 */
 
 import com.lunatech.euler.model.*;

@@ -10,7 +10,7 @@ package com.lunatech.euler.problem6
 	The square of the sum of the first ten natural numbers is,
 	(1 + 2 + ... + 10)² = 55² = 3025
 
-	Hence the difference between the sum of the squares of the first ten natural numbers and the square of the sum is 3025  385 = 2640.
+	Hence the difference between the sum of the squares of the first ten natural numbers and the square of the sum is 3025 - 385 = 2640.
 
 	Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
 */
@@ -38,6 +38,7 @@ when
 	not Limit()
 then
 	insert(new Limit(100L));
+	log(drools, "%d", 100);
 end
 
 rule "Product"
@@ -47,6 +48,7 @@ when
 	NaturalNumber($m : value < $n)
 then
 	insert(new Product($n * $m));
+	log(drools, "%d × %d = %d", $n, $m, $n * $m);
 end
 
 rule "Problem 6 solution"
